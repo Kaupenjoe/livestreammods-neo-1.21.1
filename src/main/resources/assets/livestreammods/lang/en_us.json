@@ -1,0 +1,15 @@
+{
+  "itemGroup.custom_items": "Livestream Items",
+  "block.livestreammods.main_pedestal": "Main Pedestal",
+  "block.livestreammods.side_pedestal": "Side Pedestal",
+
+  "blockentity.livestreammods.pedestal": "Pedestal",
+
+  "livestreammods.configuration.title": "Livestream-Mods Configs",
+  "livestreammods.configuration.section.livestreammods.common.toml": "Livestream-Mods Configs",
+  "livestreammods.configuration.section.livestreammods.common.toml.title": "Livestream-Mods Configs",
+  "livestreammods.configuration.items": "Item List",
+  "livestreammods.configuration.logDirtBlock": "Log Dirt Block",
+  "livestreammods.configuration.magicNumberIntroduction": "Magic Number Text",
+  "livestreammods.configuration.magicNumber": "Magic Number"
+}
