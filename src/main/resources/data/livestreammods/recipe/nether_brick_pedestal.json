@@ -1,0 +1,37 @@
+{
+  "type": "livestreammods:pedestal_crafting",
+  "ingredients": [
+    {
+      "item": "minecraft:diamond"
+    },
+
+    {
+      "item": "minecraft:diamond"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:diamond"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+
+    {
+      "item": "minecraft:diamond"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:diamond"
+    },
+    {
+      "item": "minecraft:redstone"
+    }
+  ],
+  "result": {
+    "id": "minecraft:nether_brick"
+  }
+}

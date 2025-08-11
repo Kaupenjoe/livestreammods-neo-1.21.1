@@ -1,6 +1,7 @@
 package net.kaupenjoe.livestreammods.block.custom;
 
 import com.mojang.serialization.MapCodec;
+import net.kaupenjoe.livestreammods.block.ModBlocks;
 import net.kaupenjoe.livestreammods.block.entity.ModBlockEntities;
 import net.kaupenjoe.livestreammods.block.entity.custom.PedestalBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -17,6 +18,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -26,6 +28,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2i;
 
 public class PedestalBlock extends BaseEntityBlock {
     public static final VoxelShape SHAPE = Block.box(2, 0, 2, 14, 13, 14);
@@ -77,6 +80,28 @@ public class PedestalBlock extends BaseEntityBlock {
     protected ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos,
                                               Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
         if(pLevel.getBlockEntity(pPos) instanceof PedestalBlockEntity pedestalBlockEntity) {
+            if(pStack.is(ModBlocks.SIDE_PEDESTAL.asItem())) {
+                for(Vector2i offset : PedestalBlockEntity.offsets) {
+                    if(isPositionEmpty(pLevel, pPos.offset(offset.x, 0, offset.y))) {
+                        placePedestal(pLevel, pPos.offset(offset.x, 0, offset.y));
+                        if(!pPlayer.isCreative()) {
+                            pStack.shrink(1);
+                        }
+                        pLevel.playSound(pPlayer, pPos.offset(offset.x, 0, offset.y), SoundEvents.STONE_PLACE, SoundSource.BLOCKS, 1f, 1f);
+                    } else if(hasSidePedestal(pLevel, pPos.offset(offset.x, 0, offset.y))) {
+                        continue;
+                    } else {
+                        // Any other block
+                        pPlayer.displayClientMessage(Component.literal("Remove all obstacles in the way!"), false);
+                        break;
+                    }
+
+                    break;
+                }
+
+                return ItemInteractionResult.SUCCESS;
+            }
+
             if(pPlayer.isCrouching() && !pLevel.isClientSide()) {
                 ((ServerPlayer) pPlayer).openMenu(new SimpleMenuProvider(pedestalBlockEntity, Component.literal("Pedestal")), pPos);
                 return ItemInteractionResult.SUCCESS;
@@ -84,7 +109,9 @@ public class PedestalBlock extends BaseEntityBlock {
 
             if(pedestalBlockEntity.inventory.getStackInSlot(0).isEmpty() && !pStack.isEmpty()) {
                 pedestalBlockEntity.inventory.insertItem(0, pStack.copy(), false);
-                pStack.shrink(1);
+                if(!pPlayer.isCreative()) {
+                    pStack.shrink(1);
+                }
                 pLevel.playSound(pPlayer, pPos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 2f);
             } else if(pStack.isEmpty()) {
                 ItemStack stackOnPedestal = pedestalBlockEntity.inventory.extractItem(0, 1, false);
@@ -94,6 +121,20 @@ public class PedestalBlock extends BaseEntityBlock {
             }
         }
         return ItemInteractionResult.SUCCESS;
+    }
+
+
+
+    private boolean isPositionEmpty(Level level, BlockPos pos) {
+        return level.getBlockState(pos).isAir();
+    }
+
+    private boolean hasSidePedestal(Level level, BlockPos pos) {
+        return level.getBlockState(pos).is(ModBlocks.SIDE_PEDESTAL);
+    }
+
+    private void placePedestal(Level level, BlockPos pos) {
+        level.setBlockAndUpdate(pos, ModBlocks.SIDE_PEDESTAL.get().defaultBlockState());
     }
 
     @Nullable

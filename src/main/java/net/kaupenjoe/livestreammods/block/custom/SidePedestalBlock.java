@@ -77,7 +77,9 @@ public class SidePedestalBlock extends BaseEntityBlock {
 
             if(pedestalBlockEntity.inventory.getStackInSlot(0).isEmpty() && !pStack.isEmpty()) {
                 pedestalBlockEntity.inventory.insertItem(0, pStack.copy(), false);
-                pStack.shrink(1);
+                if(!pPlayer.isCreative()) {
+                    pStack.shrink(1);
+                }
                 pLevel.playSound(pPlayer, pPos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1f, 2f);
             } else if(pStack.isEmpty()) {
                 ItemStack stackOnPedestal = pedestalBlockEntity.inventory.extractItem(0, 1, false);

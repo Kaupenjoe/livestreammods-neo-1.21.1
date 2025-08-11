@@ -4,6 +4,7 @@ import net.kaupenjoe.livestreammods.block.ModBlocks;
 import net.kaupenjoe.livestreammods.block.entity.ModBlockEntities;
 import net.kaupenjoe.livestreammods.item.ModCreativeModeTabs;
 import net.kaupenjoe.livestreammods.item.ModItems;
+import net.kaupenjoe.livestreammods.recipe.ModRecipes;
 import net.kaupenjoe.livestreammods.screen.ModMenuTypes;
 import org.slf4j.Logger;
 
@@ -37,6 +38,8 @@ public class LivestreamMods {
 
         ModBlockEntities.register(modEventBus);
         ModMenuTypes.register(modEventBus);
+
+        ModRecipes.register(modEventBus);
 
         NeoForge.EVENT_BUS.register(this);
         modEventBus.addListener(this::addCreative);

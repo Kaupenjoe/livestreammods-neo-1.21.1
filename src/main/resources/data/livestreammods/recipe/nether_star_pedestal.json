@@ -1,0 +1,37 @@
+{
+  "type": "livestreammods:pedestal_crafting",
+  "ingredients": [
+    {
+      "item": "minecraft:diamond"
+    },
+
+    {
+      "item": "minecraft:gold_block"
+    },
+    {
+      "item": "minecraft:gold_block"
+    },
+    {
+      "item": "minecraft:gold_block"
+    },
+    {
+      "item": "minecraft:gold_block"
+    },
+
+    {
+      "item": "minecraft:gold_block"
+    },
+    {
+      "item": "minecraft:gold_block"
+    },
+    {
+      "item": "minecraft:gold_block"
+    },
+    {
+      "item": "minecraft:gold_block"
+    }
+  ],
+  "result": {
+    "id": "minecraft:nether_star"
+  }
+}
