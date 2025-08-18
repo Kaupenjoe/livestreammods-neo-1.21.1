@@ -2,6 +2,8 @@ package net.kaupenjoe.livestreammods.block.entity.custom;
 
 import net.kaupenjoe.livestreammods.block.ModBlocks;
 import net.kaupenjoe.livestreammods.block.entity.ModBlockEntities;
+import net.kaupenjoe.livestreammods.networking.PedestalCraftCountS2C;
+import net.kaupenjoe.livestreammods.networking.ResetSacrificedEntityS2C;
 import net.kaupenjoe.livestreammods.recipe.ModRecipes;
 import net.kaupenjoe.livestreammods.recipe.PedestalRecipe;
 import net.kaupenjoe.livestreammods.recipe.PedestalRecipeInput;
@@ -32,6 +34,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 
@@ -54,8 +57,10 @@ public class PedestalBlockEntity extends BlockEntity implements MenuProvider {
         }
     };
     private float rotation;
-    private float count = 0f;
-    private float maxCount = 40f;
+    public int count = 0;
+    private int maxCount = 80; // 4 seconds
+
+    public EntityType<?> entityLastSacrificed = null;
 
     public static List<Vector2i> offsets = List.of(
             new Vector2i(3, 0),
@@ -71,6 +76,10 @@ public class PedestalBlockEntity extends BlockEntity implements MenuProvider {
 
     public PedestalBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(ModBlockEntities.MAIN_PEDESTAL_BE.get(), pPos, pBlockState);
+    }
+
+    public void setSacrificedEntity(EntityType<?> entityType) {
+        this.entityLastSacrificed = entityType;
     }
 
     public void clearContents() {
@@ -107,7 +116,7 @@ public class PedestalBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     public void tick(Level level, BlockPos blockPos, BlockState blockState) {
-        if (!hasRecipe())
+        if (!hasRecipe() || entityLastSacrificed == null)
             return;
 
         if(countFinished()) {
@@ -116,10 +125,21 @@ public class PedestalBlockEntity extends BlockEntity implements MenuProvider {
             removeItemsFromSidePedestals();
             spawnVisualLightningBolt((ServerLevel) level, blockPos);
             spawnExplosionParticles((ServerLevel) level);
+            resetSacrificedEntity();
         } else {
-            count++;
+            countUp();
             spawnCraftingParticles(level);
         }
+    }
+
+    private void countUp() {
+        count++;
+        PacketDistributor.sendToAllPlayers(new PedestalCraftCountS2C("Count Up", this.getBlockPos(), count));
+    }
+
+    private void resetSacrificedEntity() {
+        entityLastSacrificed = null;
+        PacketDistributor.sendToAllPlayers(new ResetSacrificedEntityS2C("Reset Entity", this.getBlockPos()));
     }
 
     private void spawnVisualLightningBolt(ServerLevel level, BlockPos blockPos) {
@@ -148,11 +168,15 @@ public class PedestalBlockEntity extends BlockEntity implements MenuProvider {
         });
     }
 
-    private boolean countFinished() {
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public boolean countFinished() {
         return count >= maxCount;
     }
 
-    private boolean hasRecipe() {
+    public boolean hasRecipe() {
         Optional<RecipeHolder<PedestalRecipe>> recipe = getCurrentRecipe();
         return recipe.isPresent();
     }
@@ -167,7 +191,7 @@ public class PedestalBlockEntity extends BlockEntity implements MenuProvider {
                                     inventory.getStackInSlot(0);
                         } else {
                             return ItemStack.EMPTY;
-                        }}).toList()), level);
+                        }}).toList(), entityLastSacrificed), level);
     }
 
     private void exchangeItemInMainPedestal() {

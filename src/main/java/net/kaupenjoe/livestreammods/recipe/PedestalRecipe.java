@@ -5,13 +5,17 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
-public record PedestalRecipe(NonNullList<Ingredient> ingredients, ItemStack output) implements Recipe<PedestalRecipeInput> {
+public record PedestalRecipe(NonNullList<Ingredient> ingredients, ItemStack output, EntityType<?> entityType) implements Recipe<PedestalRecipeInput> {
     // inputItem & output ==> Read From JSON File!
     // GrowthChamberRecipeInput --> INVENTORY of the Block Entity
 
@@ -34,6 +38,10 @@ public record PedestalRecipe(NonNullList<Ingredient> ingredients, ItemStack outp
             if(!ingredients.get(i + 1).test(pedestalRecipeInput.sidePedestalItems().get(i))) {
                 return false;
             }
+        }
+
+        if(pedestalRecipeInput.entityType() != entityType) {
+            return false;
         }
 
         return true;
@@ -76,7 +84,8 @@ public record PedestalRecipe(NonNullList<Ingredient> ingredients, ItemStack outp
                                 },
                                 DataResult::success
                         ).forGetter(PedestalRecipe::getIngredients),
-                ItemStack.CODEC.fieldOf("result").forGetter(PedestalRecipe::output)
+                ItemStack.CODEC.fieldOf("result").forGetter(PedestalRecipe::output),
+                BuiltInRegistries.ENTITY_TYPE.byNameCodec().fieldOf("entityType").forGetter(PedestalRecipe::entityType)
         ).apply(inst, PedestalRecipe::new));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, PedestalRecipe> STREAM_CODEC = StreamCodec.of(
@@ -97,7 +106,9 @@ public record PedestalRecipe(NonNullList<Ingredient> ingredients, ItemStack outp
             NonNullList<Ingredient> nonnulllist = NonNullList.withSize(i, Ingredient.EMPTY);
             nonnulllist.replaceAll(p_319735_ -> Ingredient.CONTENTS_STREAM_CODEC.decode(buffer));
             ItemStack itemstack = ItemStack.STREAM_CODEC.decode(buffer);
-            return new PedestalRecipe(nonnulllist, itemstack);
+            EntityType<?> entityType = ByteBufCodecs.registry(Registries.ENTITY_TYPE).decode(buffer);
+
+            return new PedestalRecipe(nonnulllist, itemstack, entityType);
         }
 
         private static void toNetwork(RegistryFriendlyByteBuf buffer, PedestalRecipe recipe) {
@@ -108,6 +119,7 @@ public record PedestalRecipe(NonNullList<Ingredient> ingredients, ItemStack outp
             }
 
             ItemStack.STREAM_CODEC.encode(buffer, recipe.output);
+            ByteBufCodecs.registry(Registries.ENTITY_TYPE).encode(buffer, recipe.entityType);
         }
     }
 }

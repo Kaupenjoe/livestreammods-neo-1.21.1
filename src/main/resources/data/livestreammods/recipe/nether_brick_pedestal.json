@@ -31,6 +31,7 @@
       "item": "minecraft:redstone"
     }
   ],
+  "entityType": "minecraft:cow",
   "result": {
     "id": "minecraft:nether_brick"
   }

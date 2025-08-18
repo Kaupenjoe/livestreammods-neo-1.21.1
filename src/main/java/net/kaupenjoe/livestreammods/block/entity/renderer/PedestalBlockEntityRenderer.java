@@ -13,10 +13,13 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -40,6 +43,8 @@ public class PedestalBlockEntityRenderer implements BlockEntityRenderer<Pedestal
             new Vector2i(0, -3),
             new Vector2i(-3, 0));
 
+    public Entity entity = null;
+
     public PedestalBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
     }
 
@@ -48,6 +53,8 @@ public class PedestalBlockEntityRenderer implements BlockEntityRenderer<Pedestal
                        MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay){
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
         ItemStack stack = pBlockEntity.inventory.getStackInSlot(0);
+
+        EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
 
         pPoseStack.pushPose();
         pPoseStack.translate(0.5f, 1.15f, 0.5f);
@@ -64,6 +71,29 @@ public class PedestalBlockEntityRenderer implements BlockEntityRenderer<Pedestal
                 renderSidePedestal(pBlockEntity, pPoseStack, pBufferSource, pPackedLight, pPackedOverlay, offset.x, offset.y);
             }
         });
+
+        pPoseStack.pushPose();
+        pPoseStack.translate(0.5f, 0.5f + pBlockEntity.count * 0.01f, 0.5f);
+        pPoseStack.scale(0.5f + pBlockEntity.count * 0.05f, 0.5f + pBlockEntity.count * 0.05f, 0.5f +  pBlockEntity.count * 0.05f);
+        pPoseStack.mulPose(Axis.YP.rotationDegrees(pBlockEntity.getRenderingRotation() * 0.15f * pBlockEntity.count));
+
+        if(pBlockEntity.entityLastSacrificed != null) { //pBlockEntity.entityLastSacrificed != null && entity == null) {
+            entity = pBlockEntity.entityLastSacrificed.create(Minecraft.getInstance().level);
+        } else {
+            entity = null;
+        }
+
+        if(entity != null) {
+            entityRenderDispatcher.render(
+                    entity,
+                    0,
+                    1.25,
+                    0,
+                    0, pPartialTick, pPoseStack, pBufferSource, pPackedLight);
+        }
+
+        pPoseStack.popPose();
+
     }
 
     private static void renderSidePedestal(PedestalBlockEntity pBlockEntity, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay,

@@ -31,6 +31,7 @@
       "item": "minecraft:gold_block"
     }
   ],
+  "entityType": "minecraft:pig",
   "result": {
     "id": "minecraft:nether_star"
   }
