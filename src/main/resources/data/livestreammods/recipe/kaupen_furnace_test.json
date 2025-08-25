@@ -1,0 +1,12 @@
+{
+  "type": "livestreammods:kaupen_furnace_crafting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 0.5,
+  "ingredient": {
+    "item": "minecraft:cooked_beef"
+  },
+  "result": {
+    "id": "minecraft:beef"
+  }
+}

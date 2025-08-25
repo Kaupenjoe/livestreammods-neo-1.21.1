@@ -5,6 +5,7 @@ import net.kaupenjoe.livestreammods.block.entity.ModBlockEntities;
 import net.kaupenjoe.livestreammods.block.entity.renderer.PedestalBlockEntityRenderer;
 import net.kaupenjoe.livestreammods.block.entity.renderer.SidePedestalBlockEntityRenderer;
 import net.kaupenjoe.livestreammods.screen.ModMenuTypes;
+import net.kaupenjoe.livestreammods.screen.custom.KaupenFurnaceScreen;
 import net.kaupenjoe.livestreammods.screen.custom.PedestalScreen;
 import net.kaupenjoe.livestreammods.screen.custom.SidePedestalMenu;
 import net.kaupenjoe.livestreammods.screen.custom.SidePedestalScreen;
@@ -47,5 +48,7 @@ public class LivestreamModsClient {
     public static void registerScreens(RegisterMenuScreensEvent event) {
         event.register(ModMenuTypes.PEDESTAL_MENU.get(), PedestalScreen::new);
         event.register(ModMenuTypes.SIDE_PEDESTAL_MENU.get(), SidePedestalScreen::new);
+
+        event.register(ModMenuTypes.KAUPEN_FURNACE_MENU.get(), KaupenFurnaceScreen::new);
     }
 }

@@ -1,6 +1,7 @@
 package net.kaupenjoe.livestreammods.block;
 
 import net.kaupenjoe.livestreammods.LivestreamMods;
+import net.kaupenjoe.livestreammods.block.custom.KaupenFurnaceBlock;
 import net.kaupenjoe.livestreammods.block.custom.PedestalBlock;
 import net.kaupenjoe.livestreammods.block.custom.SidePedestalBlock;
 import net.kaupenjoe.livestreammods.item.ModItems;
@@ -24,6 +25,8 @@ public class ModBlocks {
     public static final DeferredBlock<Block> SIDE_PEDESTAL = registerBlock("side_pedestal",
             () -> new SidePedestalBlock(BlockBehaviour.Properties.of().noOcclusion()));
 
+    public static final DeferredBlock<Block> KAUPEN_FURANCE = registerBlock("kaupen_furnace",
+            () -> new KaupenFurnaceBlock(BlockBehaviour.Properties.of().noOcclusion()));
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);

@@ -2,6 +2,7 @@ package net.kaupenjoe.livestreammods.block.entity;
 
 import net.kaupenjoe.livestreammods.LivestreamMods;
 import net.kaupenjoe.livestreammods.block.ModBlocks;
+import net.kaupenjoe.livestreammods.block.entity.custom.KaupenFurnaceBlockEntity;
 import net.kaupenjoe.livestreammods.block.entity.custom.PedestalBlockEntity;
 import net.kaupenjoe.livestreammods.block.entity.custom.SidePedestalBlockEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -23,6 +24,9 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("side_pedestal_be", () -> BlockEntityType.Builder.of(
                     SidePedestalBlockEntity::new, ModBlocks.SIDE_PEDESTAL.get()).build(null));
 
+    public static final Supplier<BlockEntityType<KaupenFurnaceBlockEntity>> KAUPEN_FURNACE_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("kaupen_furnace_block_entity", () ->
+                    BlockEntityType.Builder.of(KaupenFurnaceBlockEntity::new, ModBlocks.KAUPEN_FURANCE.get()).build(null));
 
 
     public static void register(IEventBus eventBus) {

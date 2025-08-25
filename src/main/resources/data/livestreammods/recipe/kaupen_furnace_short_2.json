@@ -1,0 +1,12 @@
+{
+  "type": "livestreammods:kaupen_furnace_crafting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 0.5,
+  "ingredient": {
+    "item": "minecraft:iron_ingot"
+  },
+  "result": {
+    "id": "minecraft:raw_iron"
+  }
+}

@@ -1,6 +1,7 @@
 package net.kaupenjoe.livestreammods.screen;
 
 import net.kaupenjoe.livestreammods.LivestreamMods;
+import net.kaupenjoe.livestreammods.screen.custom.KaupenFurnaceMenu;
 import net.kaupenjoe.livestreammods.screen.custom.PedestalMenu;
 import net.kaupenjoe.livestreammods.screen.custom.SidePedestalMenu;
 import net.minecraft.core.registries.Registries;
@@ -21,6 +22,10 @@ public class ModMenuTypes {
 
     public static final DeferredHolder<MenuType<?>, MenuType<SidePedestalMenu>> SIDE_PEDESTAL_MENU =
             registerMenuType("side_pedestal_menu", SidePedestalMenu::new);
+
+    public static final DeferredHolder<MenuType<?>, MenuType<KaupenFurnaceMenu>> KAUPEN_FURNACE_MENU =
+            registerMenuType("kaupen_furnace_menu", KaupenFurnaceMenu::new);
+
 
     private static <T extends AbstractContainerMenu>DeferredHolder<MenuType<?>, MenuType<T>> registerMenuType(String name,
                                                                                                               IContainerFactory<T> factory) {
